@@ -8,12 +8,11 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 
 @Service
-public class RoleServiceImpl implements RoleService{
+public class RoleServiceImpl{
     @Autowired
-    RoleDao roleDao;
+    private RoleDao roleDao;
     @Transactional
-    @Override
     public Role showRole(String name) {
-        return roleDao.showRole(name);
+        return roleDao.findRoleByName(name);
     }
 }

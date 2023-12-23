@@ -3,46 +3,55 @@ package com.example.demo.Web.Service;
 import com.example.demo.Web.Dao.UserDao;
 import com.example.demo.Web.Models.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import java.util.List;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserDetailsService {
 
     @Autowired
     private UserDao userDao;
     @Transactional
-    @Override
     public List<User> allUsers() {
-        return userDao.allUsers();
+        return userDao.findAll();
     }
     @Transactional
-    @Override
     public void addUser(User user) {
-       userDao.addUser(user);
+       userDao.save(user);
     }
 
     @Transactional
-    @Override
     public void removeUser(int id) {
-        userDao.removeUser(id);
+        userDao.deleteById(id);
     }
     @Transactional
-    @Override
     public User showUser(int id) {
-        return userDao.showUser(id);
+        return userDao.findById(id);
     }
     @Transactional
-    @Override
-    public void updateUserParams(int id, User user) {
-        userDao.updateUserParams(id, user);
+    public void updateUserParams(User user) {
+        userDao.save(user);
     }
     @Transactional
-    @Override
     public User findByName(String name){
         return userDao.findByName(name);
+    }
+    @Transactional
+    @Override
+    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
+        User user = userDao.findByName(name);
+        return org.springframework.security.core.userdetails.User.builder()
+                .username(user.getName())
+                .password(user.getPassword())
+                .authorities(user.getUserRoles())
+                .build();
+
+        //return new org.springframework.security.core.userdetails.User(user.getName(), user.getPassword(), user.getUserRoles());
     }
 
 }

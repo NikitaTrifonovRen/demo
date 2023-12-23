@@ -1,7 +1,7 @@
 package com.example.demo.Web.Contoller;
 
 import com.example.demo.Web.Models.User;
-import com.example.demo.Web.Service.UserService;
+import com.example.demo.Web.Service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @GetMapping
     public String printAllUsers (ModelMap model){
@@ -41,8 +41,8 @@ public class AdminController {
         return "update";
     }
     @PatchMapping("/{id}")
-    public String updateUser(@ModelAttribute("user") User user,@PathVariable("id") int id){
-        userService.updateUserParams(id, user);
+    public String updateUser(@ModelAttribute("user") User user){
+        userService.updateUserParams(user);
         return "redirect:/admin";
     }
     @DeleteMapping("/{id}")
